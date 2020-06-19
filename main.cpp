@@ -181,42 +181,42 @@ FloatType& FloatType::divide(float rhs)
 
 FloatType& FloatType::add(const DoubleType& dt)
 {
-    return add(*dt.value);
+    return add(float(*dt.value));
 }
 
 FloatType& FloatType::subtract(const DoubleType& dt)
 {
-    return subtract(*dt.value);
+    return subtract(float(*dt.value));
 }
 
 FloatType& FloatType::multiply(const DoubleType& dt)
 {
-    return multiply(*dt.value);
+    return multiply(float(*dt.value));
 }
 
 FloatType& FloatType::divide(const DoubleType& dt)
 {
-    return divide(*dt.value);
+    return divide(float(*dt.value));
 }
 
 FloatType& FloatType::add(const IntType& it)
 {
-    return add(*it.value);
+    return add(float(*it.value));
 }
 
 FloatType& FloatType::subtract(const IntType& it)
 {
-    return subtract(*it.value);
+    return subtract(float(*it.value));
 }
 
 FloatType& FloatType::multiply(const IntType& it)
 {
-    return multiply(*it.value);
+    return multiply(float(*it.value));
 }
 
 FloatType& FloatType::divide(const IntType& it)
 {
-    return divide(*it.value);
+    return divide(float(*it.value));
 }
 
 // DoubleType
@@ -256,42 +256,42 @@ DoubleType& DoubleType::divide(double rhs)
 
 DoubleType& DoubleType::add(const FloatType& ft)
 {
-    return add(*ft.value);
+    return add(double(*ft.value));
 }
 
 DoubleType& DoubleType::subtract(const FloatType& ft)
 {
-    return subtract(*ft.value);
+    return subtract(double(*ft.value));
 }
 
 DoubleType& DoubleType::multiply(const FloatType& ft)
 {
-    return multiply(*ft.value);
+    return multiply(double(*ft.value));
 }
 
 DoubleType& DoubleType::divide(const FloatType& ft)
 {
-    return divide(*ft.value);
+    return divide(double(*ft.value));
 }
 
 DoubleType& DoubleType::add(const IntType& it)
 {
-    return add(*it.value);
+    return add(double(*it.value));
 }
 
 DoubleType& DoubleType::subtract(const IntType& it)
 {
-    return subtract(*it.value);
+    return subtract(double(*it.value));
 }
 
 DoubleType& DoubleType::multiply(const IntType& it)
 {
-    return multiply(*it.value);
+    return multiply(double(*it.value));
 }
 
 DoubleType& DoubleType::divide(const IntType& it)
 {
-    return divide(*it.value);
+    return divide(double(*it.value));
 }
 
 // IntType
@@ -332,42 +332,42 @@ IntType& IntType::divide(int rhs)
 
 IntType& IntType::add(const FloatType& ft)
 {
-    return add(*ft.value);
+    return add(int(*ft.value));
 }
 
 IntType& IntType::subtract(const FloatType& ft)
 {
-    return subtract(*ft.value);
+    return subtract(int(*ft.value));
 }
 
 IntType& IntType::multiply(const FloatType& ft)
 {
-    return multiply(*ft.value);
+    return multiply(int(*ft.value));
 }
 
 IntType& IntType::divide(const FloatType& ft)
 {  
-    return divide(*ft.value);
+    return divide(int(*ft.value));
 }
 
 IntType& IntType::add(const DoubleType& dt)
 {
-    return add(*dt.value);
+    return add(int(*dt.value));
 }
 
 IntType& IntType::subtract(const DoubleType& dt)
 {
-    return subtract(*dt.value);
+    return subtract(int(*dt.value));
 }
 
 IntType& IntType::multiply(const DoubleType& dt)
 {
-    return multiply(*dt.value);
+    return multiply(int(*dt.value));
 }
 
 IntType& IntType::divide(const DoubleType& dt)
 {
-    return divide(*dt.value);
+    return divide(int(*dt.value));
 }
 
 /*
