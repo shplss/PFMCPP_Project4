@@ -267,7 +267,7 @@ IntType& IntType::multiply(int rhs)
 
 IntType& IntType::divide(int rhs)
 {
-    if(rhs == 0.0) 
+    if(rhs == 0.0) FIXME you're comparing rhs with a double. 
     {
         std::cout << "error: integer division by zero is an error and will crash the program!" << std::endl;
         return *this;
