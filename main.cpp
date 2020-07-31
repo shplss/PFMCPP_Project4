@@ -452,13 +452,12 @@ void part3()
     it *= static_cast<int>(dt);
     it -= static_cast<int>(ft);
     std::cout << "The result of IntType divided by 3.14 multiplied by DoubleType minus FloatType is: " << it << std::endl;
+    std::cout << "An operation followed by attempts to divide by 0, which are ignored and warns user: " << std::endl;
     it *= it;
     it /= 0;
     it /= 0.0f;
     it /= 0.0;
-    std::cout << "An operation followed by attempts to divide by 0, which are ignored and warns user: " << std::endl;
-    std::cout << it << std::endl;
-    
+    std::cout << it << std::endl; 
     it *= static_cast<int>(ft);
     std::cout << "FloatType x IntType  =  " << it << std::endl;
     it += static_cast<int>(dt);
@@ -593,7 +592,7 @@ int main()
     it += 100;
     std::cout << "Chain calculation = " << it << std::endl;
 
-        // FloatType object instanciation and method tests
+    // FloatType object instanciation and method tests
     // --------
     ft += 3.0f;
     ft *= 1.5f;
@@ -618,12 +617,15 @@ int main()
     // Intercept division by 0
     // --------
     std::cout << "Intercept division by 0 " << std::endl;
+    std::cout << "New value of it = it / 0 = ";
     it /= 0;
-    std::cout << "New value of it = it / 0 = " << it << std::endl;
+    std::cout << it << std::endl;
+    std::cout << "New value of ft = ft / 0 = ";
     ft /= 0;
-    std::cout << "New value of ft = ft / 0 = " << ft << std::endl;
+    std::cout << ft << std::endl;
+    std::cout << "New value of dt = dt / 0 = ";
     dt /= 0;
-    std::cout << "New value of dt = dt / 0 = " << dt << std::endl;
+    std::cout << dt << std::endl;
 
     std::cout << "---------------------\n" << std::endl; 
 
