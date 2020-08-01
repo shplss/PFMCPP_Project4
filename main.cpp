@@ -167,10 +167,10 @@ struct FloatType
 
     operator float() const { return *value; }
 
-    FloatType operator+=(float rhs);
-    FloatType operator-=(float rhs);
-    FloatType operator*=(float rhs);
-    FloatType operator/=(float rhs);
+    FloatType& operator+=(float rhs);
+    FloatType& operator-=(float rhs);
+    FloatType& operator*=(float rhs);
+    FloatType& operator/=(float rhs);
 
     FloatType& pow(const FloatType& exp);
     FloatType& pow(const DoubleType& exp);
@@ -194,10 +194,10 @@ struct DoubleType
 
     operator double() const { return *value; }
 
-    DoubleType operator+=(double rhs);
-    DoubleType operator-=(double rhs);
-    DoubleType operator*=(double rhs);
-    DoubleType operator/=(double rhs);
+    DoubleType& operator+=(double rhs);
+    DoubleType& operator-=(double rhs);
+    DoubleType& operator*=(double rhs);
+    DoubleType& operator/=(double rhs);
 
     DoubleType& pow(const DoubleType& exp);
     DoubleType& pow(const FloatType& exp);
@@ -221,10 +221,10 @@ struct IntType
 
     operator int() const { return *value; }
 
-    IntType operator+=(int rhs);
-    IntType operator-=(int rhs);
-    IntType operator*=(int rhs);
-    IntType operator/=(int rhs);
+    IntType& operator+=(int rhs);
+    IntType& operator-=(int rhs);
+    IntType& operator*=(int rhs);
+    IntType& operator/=(int rhs);
 
     IntType& pow(const IntType& exp);
     IntType& pow(const FloatType& exp);
@@ -259,29 +259,37 @@ private:
 
 // FloatType
 
-FloatType FloatType::operator+=(float rhs)
+FloatType& FloatType::operator+=(float rhs)
 {
-    return {*value += rhs};
+    *value += rhs;
+
+    return *this;
 }
 
-FloatType FloatType::operator-=(float rhs)
+FloatType& FloatType::operator-=(float rhs)
 {
-    return {*value -= rhs};
+    *value -= rhs;
+
+    return *this;
 }
 
-FloatType FloatType::operator*=(float rhs)
+FloatType& FloatType::operator*=(float rhs)
 {
-    return {*value *= rhs};
+    *value *= rhs;
+
+    return *this;
 }
 
-FloatType FloatType::operator/=(float rhs)
+FloatType& FloatType::operator/=(float rhs)
 {
     if(rhs == 0.0f) 
     {
         std::cout << "warning: floating point division by zero!" << std::endl;
     }
 
-    return {*value /= rhs};
+    *value /= rhs;
+
+    return *this;
 }
 
 FloatType& FloatType::pow(const FloatType& exp)
@@ -313,29 +321,37 @@ FloatType& FloatType::powInternal(float exp)
 
 // DoubleType
 
-DoubleType DoubleType::operator+=(double rhs)
+DoubleType& DoubleType::operator+=(double rhs)
 {
-    return {*value += rhs};
+    *value += rhs;
+
+    return *this;
 }
 
-DoubleType DoubleType::operator-=(double rhs)
+DoubleType& DoubleType::operator-=(double rhs)
 {
-    return {*value -= rhs};
+    *value -= rhs;
+
+    return *this;
 }
 
-DoubleType DoubleType::operator*=(double rhs)
+DoubleType& DoubleType::operator*=(double rhs)
 {
-    return {*value *= rhs};
+    *value *= rhs;
+
+    return *this;
 }
 
-DoubleType DoubleType::operator/=(double rhs)
+DoubleType& DoubleType::operator/=(double rhs)
 {
     if(rhs == 0.0) 
     {
         std::cout << "warning: floating point division by zero!" << std::endl;
     }
     
-    return {*value /= rhs};
+    *value /= rhs;
+
+    return *this;
 }
 
 DoubleType& DoubleType::pow(const DoubleType& exp)
@@ -367,30 +383,38 @@ DoubleType& DoubleType::powInternal(double exp)
 
 // IntType
 
-IntType IntType::operator+=(int rhs)
+IntType& IntType::operator+=(int rhs)
 {
-    return {*value += rhs};
+    *value += rhs;
+
+    return *this;
 }
 
-IntType IntType::operator-=(int rhs)
+IntType& IntType::operator-=(int rhs)
 {
-    return {*value -= rhs};
+    *value -= rhs;
+
+    return *this;
 }
 
-IntType IntType::operator*=(int rhs)
+IntType& IntType::operator*=(int rhs)
 {
-    return {*value *= rhs};
+    *value *= rhs;
+
+    return *this;
 }
 
-IntType IntType::operator/=(int rhs)
+IntType& IntType::operator/=(int rhs)
 {
     if(rhs == 0)
     {
         std::cout << "error: integer division by zero is an error and will crash the program!" << std::endl;
-        return *value;
+        return *this;
     }
 
-    return {*value /= rhs};
+    *value /= rhs;
+
+    return *this;
 }
 
 IntType& IntType::pow(const IntType& exp)
