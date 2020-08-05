@@ -193,15 +193,7 @@ struct IntType;
 
 struct FloatType
 {
-    // FloatType(float num) : value(new float(num)) { }
     FloatType(float num) : value(std::make_unique<float>(num)) { }
-    /*
-    ~FloatType()
-    {
-        delete value;
-        value = nullptr;
-    }
-    */
 
     operator float() const { return *value; }
 
@@ -219,7 +211,6 @@ struct FloatType
     FloatType& apply(void(*func)(std::unique_ptr<float>&));
 
 private:
-    // float* value;
     std::unique_ptr<float> value;
 
     FloatType& powInternal(float exp);
@@ -227,15 +218,7 @@ private:
 
 struct DoubleType
 {
-    // DoubleType(double num) : value(new double(num)) { }
     DoubleType(double num) : value(std::make_unique<double>(num)) { }
-    /*
-    ~DoubleType()
-    {
-        delete value;
-        value = nullptr;
-    }
-    */
 
     operator double() const { return *value; }
 
@@ -253,7 +236,6 @@ struct DoubleType
     DoubleType& apply(void(*func)(std::unique_ptr<double>&));
 
 private:
-    // double* value;
     std::unique_ptr<double> value;
 
     DoubleType& powInternal(double exp);
@@ -261,15 +243,7 @@ private:
 
 struct IntType
 {
-    // IntType(int num) : value(new int(num)) { }
     IntType(double num) : value(std::make_unique<int>(num)) { }
-    /*
-    ~IntType()
-    {
-        delete value;
-        value = nullptr;
-    }
-    */
 
     operator int() const { return *value; }
 
@@ -287,7 +261,6 @@ struct IntType
     IntType& apply(void(*func)(std::unique_ptr<int>&));
 
 private:
-    // int* value;
     std::unique_ptr<int> value;
 
     IntType& powInternal(int exp);
@@ -717,7 +690,7 @@ void part6()
     
     std::cout << "Calling FloatType::apply() using a lambda (adds 7.0f) and FloatType as return type:" << std::endl;
     std::cout << "ft3 before: " << ft3 << std::endl;
-    ft3.apply( [&](std::unique_ptr<float>& value) -> FloatType& 
+    ft3.apply( [&ft3](std::unique_ptr<float>& value) -> FloatType& 
                 {
                     *value = *value + 7.0f;
                     return ft3;
@@ -731,7 +704,7 @@ void part6()
 
     std::cout << "Calling DoubleType::apply() using a lambda (adds 6.0) and DoubleType as return type:" << std::endl;
     std::cout << "dt3 before: " << dt3 << std::endl;
-    dt3.apply( [&](std::unique_ptr<double>& value) -> DoubleType& 
+    dt3.apply( [&dt3](std::unique_ptr<double>& value) -> DoubleType& 
                 {
                     *value = *value + 6.0;
                     return dt3;
@@ -745,7 +718,7 @@ void part6()
 
     std::cout << "Calling IntType::apply() using a lambda (adds 5) and IntType as return type:" << std::endl;
     std::cout << "it3 before: " << it3 << std::endl;
-    it3.apply( [&](std::unique_ptr<int>& value) -> IntType&
+    it3.apply( [&it3](std::unique_ptr<int>& value) -> IntType&
                 {
                     *value = *value + 5;
                     return it3;
