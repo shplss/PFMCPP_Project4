@@ -1,5 +1,8 @@
 
 #include <iostream>
+#include <memory>
+#include <functional>
+
 /*
 Project 4: Part 7 / 9
 Video: Chapter 5 Part 4
@@ -76,55 +79,74 @@ Templates and Containers
 If you need to view an example, see: https://bitbucket.org/MatkatMusic/pfmcpptasks/src/master/Projects/Project4/Part7Example.cpp
 */
 
-void part7()
+template<typename NumericType>
+struct Numeric
 {
-    Numeric ft3(3.0f);
-    Numeric dt3(4.0);
-    Numeric it3(5);
+    using Type = NumericType;
+
+private:
+    std::unique_ptr<Type> ptr;
+
+public:
+    Numeric(Type value) : ptr(std::make_unique<Type>(value)) { }
+
+    Numeric& operator+=(Type rhs)
+    {
+        *ptr += rhs;
+
+        return *this;
+    }
+
+    Numeric& operator-=(Type rhs)
+    {
+        *ptr -= rhs;
+
+        return *this;
+    }
+
+    Numeric& operator*=(Type rhs)
+    {
+        *ptr *= rhs;
+
+        return *this;
+    }
     
-    std::cout << "Calling Numeric<float>::apply() using a lambda (adds 7.0f) and Numeric<float> as return type:" << std::endl;
-    std::cout << "ft3 before: " << ft3 << std::endl;
-
+    Numeric& operator/=(Type rhs)
     {
-        using Type = #4;
-        ft3.apply( [](std::unique...){} );
+        *ptr /= rhs;
+
+        return *this;
     }
 
-    std::cout << "ft3 after: " << ft3 << std::endl;
-    std::cout << "Calling Numeric<float>::apply() twice using a free function (adds 7.0f) and void as return type:" << std::endl;
-    std::cout << "ft3 before: " << ft3 << std::endl;
-    ft3.apply(myNumericFreeFunct).apply(myNumericFreeFunct);
-    std::cout << "ft3 after: " << ft3 << std::endl;
-    std::cout << "---------------------\n" << std::endl;
-
-    std::cout << "Calling Numeric<double>::apply() using a lambda (adds 6.0) and Numeric<double> as return type:" << std::endl;
-    std::cout << "dt3 before: " << dt3 << std::endl;
-
+    Numeric& apply( std::function<Numeric&(std::unique_ptr<Type>&)> func)   
     {
-        using Type = #4;
-        dt3.apply( [](std::unique...){} ); // This calls the templated apply fcn
+        if( func )
+        {
+            return f(ptr);  
+        }
+        
+        return *this;
     }
     
-    std::cout << "dt3 after: " << dt3 << std::endl;
-    std::cout << "Calling Numeric<double>::apply() twice using a free function (adds 7.0) and void as return type:" << std::endl;
-    std::cout << "dt3 before: " << dt3 << std::endl;
-    dt3.apply(myNumericFreeFunct<double>).apply(myNumericFreeFunct<double>); // This calls the templated apply fcn
-    std::cout << "dt3 after: " << dt3 << std::endl;
-    std::cout << "---------------------\n" << std::endl;
-
-    std::cout << "Calling Numeric<int>::apply() using a lambda (adds 5) and Numeric<int> as return type:" << std::endl;
-    std::cout << "it3 before: " << it3 << std::endl;
-
+    Numeric& apply( void(*f)(std::unique_ptr<Type>&) ) 
     {
-        using Type = #4;
-        it3.apply( [](std::unique...){} );
+        if( f )
+        {
+            f(ptr);
+        } 
+            
+        return *this; 
     }
-    std::cout << "it3 after: " << it3 << std::endl;
-    std::cout << "Calling Numeric<int>::apply() twice using a free function (adds 7) and void as return type:" << std::endl;
-    std::cout << "it3 before: " << it3 << std::endl;
-    it3.apply(myNumericFreeFunct).apply(myNumericFreeFunct);
-    std::cout << "it3 after: " << it3 << std::endl;
-    std::cout << "---------------------\n" << std::endl;    
+    
+    operator Type() { return *ptr; }
+};
+
+template<typename NumericType>                                 
+void myNumericFreeFunct(std::unique_ptr<NumericType>& up)
+{
+    NumericType& val = *up;
+
+    val += 7;
 }
 
 /*
@@ -765,6 +787,7 @@ void part4()
     std::cout << "---------------------\n" << std::endl;
 }
 
+/*
 void part6()
 {
     FloatType ft3(3.0f);
@@ -810,6 +833,74 @@ void part6()
     std::cout << "Calling IntType::apply() using a free function (adds 5) and void as return type:" << std::endl;
     std::cout << "it3 before: " << it3 << std::endl;
     it3.apply(myIntFreeFunct);
+    std::cout << "it3 after: " << it3 << std::endl;
+    std::cout << "---------------------\n" << std::endl;    
+}
+*/
+
+void part7()
+{
+    Numeric ft3(3.0f);
+    Numeric dt3(4.0);
+    Numeric it3(5);
+    
+    std::cout << "Calling Numeric<float>::apply() using a lambda (adds 7.0f) and Numeric<float> as return type:" << std::endl;
+    std::cout << "ft3 before: " << ft3 << std::endl;
+
+    using Type = decltype(ft3)::Type;
+    using RetType = decltype(ft3);
+
+    ft3.apply([&ft3](std::unique_ptr<Type>& val) -> RetType&
+    {
+        *val += 7.0f;
+
+        return ft3;
+    });
+
+    std::cout << "ft3 after: " << ft3 << std::endl;
+    std::cout << "Calling Numeric<float>::apply() twice using a free function (adds 7.0f) and void as return type:" << std::endl;
+    std::cout << "ft3 before: " << ft3 << std::endl;
+    ft3.apply(myNumericFreeFunct).apply(myNumericFreeFunct);
+    std::cout << "ft3 after: " << ft3 << std::endl;
+    std::cout << "---------------------\n" << std::endl;
+
+    std::cout << "Calling Numeric<double>::apply() using a lambda (adds 6.0) and Numeric<double> as return type:" << std::endl;
+    std::cout << "dt3 before: " << dt3 << std::endl;
+
+    using Type2 = decltype(dt3)::Type;
+    using RetType2 = decltype(dt3);
+
+    dt3.apply([&dt3](std::unique_ptr<Type2>& val) -> RetType2&
+    {
+        *val += 6.0f;
+
+        return dt3;
+    });
+    
+    std::cout << "dt3 after: " << dt3 << std::endl;
+    std::cout << "Calling Numeric<double>::apply() twice using a free function (adds 7.0) and void as return type:" << std::endl;
+    std::cout << "dt3 before: " << dt3 << std::endl;
+    dt3.apply(myNumericFreeFunct<double>).apply(myNumericFreeFunct<double>);
+    std::cout << "dt3 after: " << dt3 << std::endl;
+    std::cout << "---------------------\n" << std::endl;
+
+    std::cout << "Calling Numeric<int>::apply() using a lambda (adds 5) and Numeric<int> as return type:" << std::endl;
+    std::cout << "it3 before: " << it3 << std::endl;
+
+    using Type3 = decltype(it3)::Type;
+    using RetType3 = decltype(it3);
+
+    it3.apply([&it3](std::unique_ptr<Type3>& val) -> RetType3&
+    {
+        *val += 5;
+
+        return it3;
+    });
+
+    std::cout << "it3 after: " << it3 << std::endl;
+    std::cout << "Calling Numeric<int>::apply() twice using a free function (adds 7) and void as return type:" << std::endl;
+    std::cout << "it3 before: " << it3 << std::endl;
+    it3.apply(myNumericFreeFunct).apply(myNumericFreeFunct);
     std::cout << "it3 after: " << it3 << std::endl;
     std::cout << "---------------------\n" << std::endl;    
 }
@@ -895,7 +986,8 @@ int main()
 
     part3();
     part4();
-    part6();
+    // part6();
+    part7();
 
     std::cout << "good to go!\n";
 
