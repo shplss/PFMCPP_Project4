@@ -122,7 +122,7 @@ public:
     {
         if( func )
         {
-            return f(ptr);  
+            return func(ptr);  
         }
         
         return *this;
@@ -872,7 +872,7 @@ void part7()
 
     dt3.apply([&dt3](std::unique_ptr<Type2>& val) -> RetType2&
     {
-        *val += 6.0f;
+        *val += 6.0;
 
         return dt3;
     });
