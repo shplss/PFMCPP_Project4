@@ -1,7 +1,7 @@
-
 #include <iostream>
 #include <memory>
 #include <functional>
+#include <cmath>
 
 /*
 Project 4: Part 7 / 9
@@ -87,6 +87,13 @@ struct Numeric
 private:
     std::unique_ptr<Type> ptr;
 
+    Numeric& powInternal(Type exp)
+    {
+        *ptr = std::pow(*ptr, exp);
+
+        return *this;
+    }
+
 public:
     Numeric(Type value) : ptr(std::make_unique<Type>(value)) { }
 
@@ -136,6 +143,21 @@ public:
         } 
             
         return *this; 
+    }
+
+    Numeric& pow(const Numeric<float>& exp)
+    {
+        return powInternal(exp);
+    }
+
+    Numeric& pow(const Numeric<double>& exp)
+    {
+        return powInternal(static_cast<Type>(exp));
+    }
+
+    Numeric& pow(const Numeric<int>& exp)
+    {
+        return powInternal(static_cast<Type>(exp));
     }
     
     operator Type() { return *ptr; }
@@ -293,6 +315,27 @@ struct HeapA
     }
 };
 
+struct Point
+{
+    Point(Numeric<float>& ft, float num) : x(ft), y(num) {}
+
+    Point& multiply(float m)
+    {
+        x *= m;
+        y *= m;
+        return *this;
+    }
+
+    void toString() 
+    {
+        std::cout << "Point { x: " << x << ", y: " << y << " }" << std::endl;
+    }
+
+private:
+    float x{0}, y{0};
+};
+
+/*
 struct DoubleType;
 struct IntType;
 
@@ -369,26 +412,6 @@ private:
     std::unique_ptr<int> value;
 
     IntType& powInternal(int exp);
-};
-
-struct Point
-{
-    Point(FloatType& ft, float num) : x(ft), y(num) {}
-
-    Point& multiply(float m)
-    {
-        x *= m;
-        y *= m;
-        return *this;
-    }
-
-    void toString() 
-    {
-        std::cout << "Point { x: " << x << ", y: " << y << " }" << std::endl;
-    }
-
-private:
-    float x{0}, y{0};
 };
 
 // FloatType
@@ -657,6 +680,8 @@ void myIntFreeFunct(std::unique_ptr<int>& value)
     it3 = it3 + 5;
 }
 
+*/
+
 /*
  MAKE SURE YOU ARE NOT ON THE MASTER BRANCH
 
@@ -673,10 +698,14 @@ void myIntFreeFunct(std::unique_ptr<int>& value)
 
 void part3()
 {
-    FloatType ft( 5.5f );
-    DoubleType dt( 11.1 );
-    IntType it ( 34 );
-    DoubleType pi( 3.14 );
+    //FloatType ft( 5.5f );
+    Numeric<float> ft( 5.5f );
+    //DoubleType dt( 11.1 );
+    Numeric<double> dt( 11.1 );
+    //IntType it ( 34 );
+    Numeric<int> it ( 34 );
+    //DoubleType pi( 3.14 );
+    Numeric<double> pi( 3.14 );
 
     ft *= ft;
     ft *= ft;
@@ -708,15 +737,21 @@ void part4()
     // ------------------------------------------------------------
     //                          Power tests
     // ------------------------------------------------------------
-    FloatType ft1(2);
-    DoubleType dt1(2);
-    IntType it1(2);    
+    //FloatType ft1(2);
+    Numeric<float> ft1(2);
+    //DoubleType dt1(2);
+    Numeric<double> dt1(2);
+    //IntType it1(2);
+    Numeric<int> it1(2);    
     int floatExp = 2.0f;
     int doubleExp = 2.0;
     int intExp = 2;
-    IntType itExp(2);
-    FloatType ftExp(2.0f);
-    DoubleType dtExp(2.0);
+    //IntType itExp(2);
+    Numeric<int> itExp(2);
+    //FloatType ftExp(2.0f);
+    Numeric<float> ftExp(2.0f);
+    //DoubleType dtExp(2.0);
+    Numeric<double> dtExp(2.0);
     
     // Power tests with FloatType
     std::cout << "Power tests with FloatType " << std::endl;
@@ -745,9 +780,12 @@ void part4()
     // ------------------------------------------------------------
     //                          Point tests
     // ------------------------------------------------------------
-    FloatType ft2(3.0f);
-    DoubleType dt2(4.0);
-    IntType it2(5);
+    //FloatType ft2(3.0f);
+    Numeric<float> ft2(3.0f);
+    //DoubleType dt2(4.0);
+    Numeric<double> dt2(4.0);
+    //IntType it2(5);
+    Numeric<int> it2(5);
     float floatMul = 6.0f;
 
     // Point tests with float
@@ -911,9 +949,12 @@ int main()
     HeapA heapA; 
 
     //assign heap primitives
-    FloatType ft ( 2.0f );
-    DoubleType dt ( 2 );
-    IntType it ( 2 ) ;
+    //FloatType ft ( 2.0f );
+    Numeric<float> ft(2.0f);
+    //DoubleType dt ( 2 );
+    Numeric<double> dt(2);
+    //IntType it ( 2 ) ;
+    Numeric<int> it(2);
 
     ft += 2.0f;
     std::cout << "FloatType add result=" << ft << std::endl;
