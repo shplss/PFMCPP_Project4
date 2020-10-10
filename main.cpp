@@ -120,6 +120,31 @@ public:
     
     Numeric& operator/=(Type rhs)
     {
+        using typeRHS = decltype(rhs);
+
+        if constexpr (std::is_same<int, Type>::value)
+        {
+            if constexpr (std::is_same<int, typeRHS>::value)
+            {
+                if (rhs == 0)
+                {
+                    std::cout << "can't divide integers by zero!" << "\n";
+
+                    return *this;
+                }
+            }
+            else if (rhs < std::numeric_limits<NumericType>::epsilon())
+            {
+                std::cout << "can't divide integers by zero!" << "\n";
+                
+                return *this;
+            }
+        }
+        else if (rhs < std::numeric_limits<NumericType>::epsilon())
+        {
+            std::cout << "warning: floating point division by zero!" << "\n";
+        }
+
         *ptr /= rhs;
 
         return *this;
@@ -147,7 +172,7 @@ public:
 
     Numeric& pow(const Numeric<float>& exp)
     {
-        return powInternal(exp);
+        return powInternal(static_cast<Type>(exp));
     }
 
     Numeric& pow(const Numeric<double>& exp)
@@ -160,7 +185,7 @@ public:
         return powInternal(static_cast<Type>(exp));
     }
     
-    operator Type() { return *ptr; }
+    operator Type() const { return *ptr; }
 };
 
 template<typename NumericType>                                 
@@ -336,353 +361,6 @@ private:
 };
 
 /*
-struct DoubleType;
-struct IntType;
-
-struct FloatType
-{
-    FloatType(float num) : value(std::make_unique<float>(num)) { }
-
-    operator float() const { return *value; }
-
-    FloatType& operator+=(float rhs);
-    FloatType& operator-=(float rhs);
-    FloatType& operator*=(float rhs);
-    FloatType& operator/=(float rhs);
-
-    FloatType& pow(const FloatType& exp);
-    FloatType& pow(const DoubleType& exp);
-    FloatType& pow(const IntType& exp);
-    FloatType& pow(float exp);
-
-    FloatType& apply(std::function<FloatType&(std::unique_ptr<float>&)> func);
-    FloatType& apply(void(*func)(std::unique_ptr<float>&));
-
-private:
-    std::unique_ptr<float> value;
-
-    FloatType& powInternal(float exp);
-};
-
-struct DoubleType
-{
-    DoubleType(double num) : value(std::make_unique<double>(num)) { }
-
-    operator double() const { return *value; }
-
-    DoubleType& operator+=(double rhs);
-    DoubleType& operator-=(double rhs);
-    DoubleType& operator*=(double rhs);
-    DoubleType& operator/=(double rhs);
-
-    DoubleType& pow(const DoubleType& exp);
-    DoubleType& pow(const FloatType& exp);
-    DoubleType& pow(const IntType& exp);
-    DoubleType& pow(double exp);
-
-    DoubleType& apply(std::function<DoubleType&(std::unique_ptr<double>&)> func);
-    DoubleType& apply(void(*func)(std::unique_ptr<double>&));
-
-private:
-    std::unique_ptr<double> value;
-
-    DoubleType& powInternal(double exp);
-};
-
-struct IntType
-{
-    IntType(double num) : value(std::make_unique<int>(num)) { }
-
-    operator int() const { return *value; }
-
-    IntType& operator+=(int rhs);
-    IntType& operator-=(int rhs);
-    IntType& operator*=(int rhs);
-    IntType& operator/=(int rhs);
-
-    IntType& pow(const IntType& exp);
-    IntType& pow(const FloatType& exp);
-    IntType& pow(const DoubleType& exp);
-    IntType& pow(int exp);
-
-    IntType& apply(std::function<IntType&(std::unique_ptr<int>&)> func);
-    IntType& apply(void(*func)(std::unique_ptr<int>&));
-
-private:
-    std::unique_ptr<int> value;
-
-    IntType& powInternal(int exp);
-};
-
-// FloatType
-
-FloatType& FloatType::operator+=(float rhs)
-{
-    *value += rhs;
-
-    return *this;
-}
-
-FloatType& FloatType::operator-=(float rhs)
-{
-    *value -= rhs;
-
-    return *this;
-}
-
-FloatType& FloatType::operator*=(float rhs)
-{
-    *value *= rhs;
-
-    return *this;
-}
-
-FloatType& FloatType::operator/=(float rhs)
-{
-    if(rhs == 0.0f) 
-    {
-        std::cout << "warning: floating point division by zero!" << std::endl;
-    }
-
-    *value /= rhs;
-
-    return *this;
-}
-
-FloatType& FloatType::pow(const FloatType& exp)
-{
-    return powInternal(static_cast<float>(exp));
-}
-
-FloatType& FloatType::pow(const DoubleType& exp)
-{
-    return powInternal(static_cast<float>(exp));
-}
-
-FloatType& FloatType::pow(const IntType& exp)
-{
-    return powInternal(static_cast<float>(exp));
-}
-
-FloatType& FloatType::pow(float exp)
-{
-    return powInternal(exp);
-}
-
-FloatType& FloatType::powInternal(float exp)
-{
-    *value = std::pow(*value, exp);
-
-    return *this;
-}
-
-FloatType& FloatType::apply(std::function<FloatType&(std::unique_ptr<float>&)> func)
-{
-    if(func)
-    {
-        return func(value);
-    }
-
-    return *this;
-}
-
-FloatType& FloatType::apply(void(*func)(std::unique_ptr<float>&))
-{
-    if(func)
-    {
-        func(value);
-    }
-
-    return *this;
-}
-
-void myFloatFreeFunct(std::unique_ptr<float>& value)
-{
-    float& ft3 = *value;
-    ft3 = ft3 + 7.0f;
-}
-
-// DoubleType
-
-DoubleType& DoubleType::operator+=(double rhs)
-{
-    *value += rhs;
-
-    return *this;
-}
-
-DoubleType& DoubleType::operator-=(double rhs)
-{
-    *value -= rhs;
-
-    return *this;
-}
-
-DoubleType& DoubleType::operator*=(double rhs)
-{
-    *value *= rhs;
-
-    return *this;
-}
-
-DoubleType& DoubleType::operator/=(double rhs)
-{
-    if(rhs == 0.0) 
-    {
-        std::cout << "warning: floating point division by zero!" << std::endl;
-    }
-    
-    *value /= rhs;
-
-    return *this;
-}
-
-DoubleType& DoubleType::pow(const DoubleType& exp)
-{
-    return powInternal(static_cast<double>(exp));
-}
-
-DoubleType& DoubleType::pow(const FloatType& exp)
-{
-    return powInternal(static_cast<double>(exp));
-}
-
-DoubleType& DoubleType::pow(const IntType& exp)
-{
-    return powInternal(static_cast<double>(exp));
-}
-
-DoubleType& DoubleType::pow(double exp)
-{
-    return powInternal(exp);
-}
-
-DoubleType& DoubleType::powInternal(double exp)
-{
-    *value = std::pow(*value, exp);
-
-    return *this;
-}
-
-DoubleType& DoubleType::apply(std::function<DoubleType&(std::unique_ptr<double>&)> func)
-{
-    if(func)
-    {
-        return func(value);
-    }
-
-    return *this;
-}
-
-DoubleType& DoubleType::apply(void(*func)(std::unique_ptr<double>&))
-{
-    if(func)
-    {
-        func(value);
-    }
-
-    return *this;
-}
-
-void myDoubleFreeFunct(std::unique_ptr<double>& value)
-{
-    double& dt3 = *value;
-    dt3 = dt3 + 6.0;
-}
-
-// IntType
-
-IntType& IntType::operator+=(int rhs)
-{
-    *value += rhs;
-
-    return *this;
-}
-
-IntType& IntType::operator-=(int rhs)
-{
-    *value -= rhs;
-
-    return *this;
-}
-
-IntType& IntType::operator*=(int rhs)
-{
-    *value *= rhs;
-
-    return *this;
-}
-
-IntType& IntType::operator/=(int rhs)
-{
-    if(rhs == 0)
-    {
-        std::cout << "error: integer division by zero is an error and will crash the program!" << std::endl;
-    } 
-    else
-    {
-        *value /= rhs;
-    }  
-
-    return *this;
-}
-
-IntType& IntType::pow(const IntType& exp)
-{
-    return powInternal(static_cast<int>(exp));
-}
-
-IntType& IntType::pow(const FloatType& exp)
-{
-    return powInternal(static_cast<int>(exp));
-}
-
-IntType& IntType::pow(const DoubleType& exp)
-{
-    return powInternal(static_cast<int>(exp));
-}
-
-IntType& IntType::pow(int exp)
-{
-    return powInternal(exp);
-}
-
-IntType& IntType::powInternal(int exp)
-{
-    *value = static_cast<int>(std::pow(*value, exp));
-
-    return *this;
-}
-
-IntType& IntType::apply(std::function<IntType&(std::unique_ptr<int>&)> func)
-{
-    if(func)
-    {
-        return func(value);
-    }
-
-    return *this;
-}
-
-IntType& IntType::apply(void(*func)(std::unique_ptr<int>&))
-{
-    if(func)
-    {
-        func(value);
-    }
-
-    return *this;
-}
-
-void myIntFreeFunct(std::unique_ptr<int>& value)
-{
-    int& it3 = *value;
-    it3 = it3 + 5;
-}
-
-*/
-
-/*
  MAKE SURE YOU ARE NOT ON THE MASTER BRANCH
 
  Commit your changes by clicking on the Source Control panel on the left, entering a message, and click [Commit and push].
@@ -698,13 +376,9 @@ void myIntFreeFunct(std::unique_ptr<int>& value)
 
 void part3()
 {
-    //FloatType ft( 5.5f );
     Numeric<float> ft( 5.5f );
-    //DoubleType dt( 11.1 );
     Numeric<double> dt( 11.1 );
-    //IntType it ( 34 );
     Numeric<int> it ( 34 );
-    //DoubleType pi( 3.14 );
     Numeric<double> pi( 3.14 );
 
     ft *= ft;
@@ -737,20 +411,15 @@ void part4()
     // ------------------------------------------------------------
     //                          Power tests
     // ------------------------------------------------------------
-    //FloatType ft1(2);
+
     Numeric<float> ft1(2);
-    //DoubleType dt1(2);
     Numeric<double> dt1(2);
-    //IntType it1(2);
     Numeric<int> it1(2);    
-    int floatExp = 2.0f;
-    int doubleExp = 2.0;
-    int intExp = 2;
-    //IntType itExp(2);
+    Numeric<float> floatExp = 2.0f;
+    Numeric<double> doubleExp = 2.0;
+    Numeric<int> intExp = 2;
     Numeric<int> itExp(2);
-    //FloatType ftExp(2.0f);
     Numeric<float> ftExp(2.0f);
-    //DoubleType dtExp(2.0);
     Numeric<double> dtExp(2.0);
     
     // Power tests with FloatType
@@ -780,11 +449,9 @@ void part4()
     // ------------------------------------------------------------
     //                          Point tests
     // ------------------------------------------------------------
-    //FloatType ft2(3.0f);
+
     Numeric<float> ft2(3.0f);
-    //DoubleType dt2(4.0);
     Numeric<double> dt2(4.0);
-    //IntType it2(5);
     Numeric<int> it2(5);
     float floatMul = 6.0f;
 
@@ -949,11 +616,8 @@ int main()
     HeapA heapA; 
 
     //assign heap primitives
-    //FloatType ft ( 2.0f );
     Numeric<float> ft(2.0f);
-    //DoubleType dt ( 2 );
     Numeric<double> dt(2);
-    //IntType it ( 2 ) ;
     Numeric<int> it(2);
 
     ft += 2.0f;
