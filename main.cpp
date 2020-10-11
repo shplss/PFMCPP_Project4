@@ -89,7 +89,7 @@ private:
 
     Numeric& powInternal(Type exp)
     {
-        *ptr = std::pow(*ptr, exp);
+        *ptr = static_cast<Type>(std::pow(*ptr, exp));
 
         return *this;
     }
@@ -120,15 +120,13 @@ public:
     
     Numeric& operator/=(Type rhs)
     {
-        using typeRHS = decltype(rhs);
-
         if constexpr (std::is_same<int, Type>::value)
         {
-            if constexpr (std::is_same<int, typeRHS>::value)
+            if constexpr (std::is_same<int, decltype(rhs)>::value)
             {
                 if (rhs == 0)
                 {
-                    std::cout << "can't divide integers by zero!" << "\n";
+                    std::cout << "error: integer division by zero is an error and will crash the program!" << "\n";
 
                     return *this;
                 }
