@@ -118,11 +118,12 @@ public:
         return *this;
     }
     
-    Numeric& operator/=(Type rhs)
+    template<typename DivisionType>
+    Numeric& operator/=(DivisionType rhs)
     {
         if constexpr (std::is_same<int, Type>::value)
         {
-            if constexpr (std::is_same<int, decltype(rhs)>::value)
+            if constexpr (std::is_same<int, DivisionType>::value)
             {
                 if (rhs == 0)
                 {
@@ -166,6 +167,83 @@ public:
         } 
             
         return *this; 
+    }
+
+    Numeric& pow(const Numeric<float>& exp)
+    {
+        return powInternal(static_cast<Type>(exp));
+    }
+
+    Numeric& pow(const Numeric<double>& exp)
+    {
+        return powInternal(static_cast<Type>(exp));
+    }
+
+    Numeric& pow(const Numeric<int>& exp)
+    {
+        return powInternal(static_cast<Type>(exp));
+    }
+    
+    operator Type() const { return *ptr; }
+};
+
+template<>
+struct Numeric<double>
+{
+    using Type = double;
+
+private:
+    std::unique_ptr<Type> ptr;
+
+    Numeric& powInternal(Type exp)
+    {
+        *ptr = static_cast<Type>(std::pow(*ptr, exp));
+
+        return *this;
+    }
+
+public:
+    Numeric(Type value) : ptr(std::make_unique<Type>(value)) { }
+
+    Numeric& operator+=(Type rhs)
+    {
+        *ptr += rhs;
+
+        return *this;
+    }
+
+    Numeric& operator-=(Type rhs)
+    {
+        *ptr -= rhs;
+
+        return *this;
+    }
+
+    Numeric& operator*=(Type rhs)
+    {
+        *ptr *= rhs;
+
+        return *this;
+    }
+    
+    Numeric& operator/=(Type rhs)
+    {
+       if (rhs == 0.0) 
+       {
+            std::cout << "warning: floating point division by zero!" << "\n";
+       }
+
+        *ptr /= rhs;
+
+        return *this;
+    }
+
+    template<typename Callable>
+    Numeric& apply(Callable CalFunc)   
+    {
+        CalFunc(ptr);  
+        
+        return *this;
     }
 
     Numeric& pow(const Numeric<float>& exp)
