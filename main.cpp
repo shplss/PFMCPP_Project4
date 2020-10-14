@@ -132,7 +132,7 @@ public:
                     return *this;
                 }
             }
-            else if (rhs < std::numeric_limits<NumericType>::epsilon())
+            else if (rhs < std::numeric_limits<DivisionType>::epsilon())
             {
                 std::cout << "can't divide integers by zero!" << "\n";
                 
