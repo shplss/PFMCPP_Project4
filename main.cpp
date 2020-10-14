@@ -459,7 +459,7 @@ void part3()
 
     ft *= ft;
     ft *= ft;
-    ft /= it;
+    ft /= static_cast<float>(it);
     std::cout << "The result of FloatType^3 divided by IntType is: " << ft << std::endl;
     dt *= 3;
     dt += it;
